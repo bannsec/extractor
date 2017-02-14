@@ -23,7 +23,6 @@ def main():
     parser.add_argument('-rm',action='store_true',help='Should we remove the source file after extract? (defualt: False)')
 
     args = parser.parse_args()
-    print(args)
 
     config['fileName'] = os.path.abspath(args.fileName[0])
  
