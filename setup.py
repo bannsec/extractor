@@ -20,7 +20,7 @@ def fix_setuptools():
     try:
         from setuptools.sandbox import DirectorySandbox
         def violation(operation, *args, **_):
-            print "SandboxViolation: %s" % (args,)
+            print("SandboxViolation: %s" % (args,))
 
         DirectorySandbox._violation = violation
     except ImportError:
