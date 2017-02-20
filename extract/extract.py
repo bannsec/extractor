@@ -5,8 +5,7 @@ import sys
 import argparse
 import logging
 import os
-
-from handlers_list import handlers
+import importlib
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("extract")
@@ -38,16 +37,18 @@ def main():
 
     logger.info("File magic is: {0} ({1})".format(config['magic_str'],config['magic_mime']))
 
-    run_extractors()
+    run_extractor()
 
-def run_extractors():
+def run_extractor():
     
-    if config['magic_mime'] not in handlers:
+    try:
+        module = "extract.handlers." + config['magic_mime'].replace("/",".").replace("-","_")
+        handler = importlib.import_module(module)
+
+    except:
         logger.error("No handler available for type {0} ({1})".format(config['magic_str'],config['magic_mime']))
         return
 
-    # Try each handler
-    for handler in handlers[config['magic_mime']]:
-        handle = handler.handle(config)
-        handle.extract()
+    handle = handler.handle(config)
+    handle.extract()
 

@@ -6,22 +6,22 @@ class handle(handleBaseClass):
         config = self.config
 
         # Open it up
-        t = tarfile.TarFile(config['fileName'])
-
-        #logger.info("Extracting the following files: {0}".format([x.filename for x in z.filelist]))
+        b = bz2.BZ2File(config['fileName'])
 
         # Find the base directory of the file
         directory = os.path.dirname(os.path.abspath(config['fileName']))
         
         # Do the actual extraction
-        t.extractall(path=directory)
+        # TODO: Maybe we wanna buffer this...
+        with open(config['fileName'] + "_extracted","wb") as f:
+            f.write(b.read())
 
         # Call parent handler
         handleBaseClass.extract(self)
         
-        
-import tarfile
+
+import bz2        
 import logging
 import os
 
-logger = logging.getLogger('extract.handlers.tar')
+logger = logging.getLogger('extract.handlers.application.x_bzip2')
