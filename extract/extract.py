@@ -10,6 +10,14 @@ import extract.Colorer
 
 logger = logging.getLogger("extract")
 
+def testLibArchive():
+    # Make sure libarchive is installed correctly
+    try:
+        import libarchive.public
+    except:
+        logger.error("LibArchive not properly installed. Do the following (for ubuntu):\n\tsudo apt-get install libarchive-dev\n\tpip install https://github.com/dsoprea/PyEasyArchive/tarball/master\n")
+
+
 def main():
     global config
 
@@ -46,9 +54,12 @@ def main():
     run_extractor()
 
 def run_extractor():
+
+    testLibArchive()
     
     try:
         module = "extract.handlers." + config['magic_mime'].replace("/",".").replace("-","_")
+        logger.debug("import " + module)
         handler = importlib.import_module(module)
 
     except:
