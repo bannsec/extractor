@@ -6,8 +6,8 @@ import argparse
 import logging
 import os
 import importlib
+import extract.Colorer
 
-logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("extract")
 
 def main():
@@ -20,8 +20,14 @@ def main():
     parser = argparse.ArgumentParser(description='Universal Extractor')
     parser.add_argument('fileName',metavar='file',type=str,nargs=1,help='The file to extract')
     parser.add_argument('-rm',action='store_true',help='Should we remove the source file after extract? (defualt: False)')
+    parser.add_argument('-debug',action='store_true',help='Enable debugging logging (defualt: False)')
 
     args = parser.parse_args()
+
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.WARN)
 
     config['fileName'] = os.path.abspath(args.fileName[0])
  
