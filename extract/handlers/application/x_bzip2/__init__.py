@@ -10,10 +10,16 @@ class handle(handleBaseClass):
 
         # Find the base directory of the file
         directory = os.path.dirname(os.path.abspath(config['fileName']))
+
+        # Determine output file name
+        if config['fileName'].endswith(".bz2"):
+            outFile = config['fileName'][:-4]
+        else:
+            outFile = config['fileName'] + "_extracted"
         
         # Do the actual extraction
         # TODO: Maybe we wanna buffer this...
-        with open(config['fileName'] + "_extracted","wb") as f:
+        with open(outFile,"wb") as f:
             f.write(b.read())
 
         # Call parent handler
