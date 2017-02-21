@@ -55,12 +55,35 @@ class handle(handleBaseClass):
 
         return True
 
+    def _nufile(self):
+        config = self.config
+
+        # Are we dealing with NuFile?
+        if "nufile" not in config['magic_str'].lower():
+            logger.info("Doesn't appear to be NuFile")
+            return False
+
+        # Do we have the tool installed?
+        if not shutil.which("nulib2"):
+            logger.warn("nulib2 isn't installed. try installing it (http://nulib.com/downloads/index.htm)")
+            return False
+
+        try:
+            subprocess.check_output(["nulib2","-xs",config['fileName']])
+            return True
+
+        except Exception as e:
+            logger.error("Something went wrong with nulib extraction\n\t" + e.output)
+            return False
+
+
     def extract(self):
         # List of preferred extraction options
         extract_options = [
             self._libarchive,
             self._lzop,
             self._zpaq,
+            self._nufile,
         ]
 
         config = self.config
