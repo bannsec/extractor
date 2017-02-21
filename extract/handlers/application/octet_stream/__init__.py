@@ -76,6 +76,27 @@ class handle(handleBaseClass):
             logger.error("Something went wrong with nulib extraction\n\t" + e.output)
             return False
 
+    def _dact(self):
+        config = self.config
+
+        # Are we dealing with DACT?
+        with open(config['fileName'],"rb") as f:
+            if f.read(3) != b"DCT":
+                logger.info("Doesn't appear to be DACT")
+                return False
+        
+        # Do we have the tool?
+        if not shutil.which("dact"):
+            logger.warn("dact isn't installed. try installing it.")
+            return False
+
+        out = subprocess.check_output(["dact","-df",config['fileName']],stderr=subprocess.STDOUT)
+        
+        if out != b"":
+            logger.error("DACT might have errored:\n\t" + out)
+            return False
+
+        return True
 
     def extract(self):
         # List of preferred extraction options
@@ -84,6 +105,7 @@ class handle(handleBaseClass):
             self._lzop,
             self._zpaq,
             self._nufile,
+            self._dact,
         ]
 
         config = self.config
