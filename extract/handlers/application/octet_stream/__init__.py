@@ -98,6 +98,25 @@ class handle(handleBaseClass):
 
         return True
 
+    def _7z(self):
+        """Because 7z extracts a ton of stuff"""
+
+        config = self.config
+        
+        # Do we have the tool?
+        if not shutil.which("7z"):
+            logger.warn("7z not installed. try installing it")
+            return False
+        
+        try:
+            subprocess.check_output(["7z","x","-y",config['fileName']])
+            return True
+
+        except Exception as e:
+            logger.warn("7z extraction error:\n\t" + e.output)
+            return False
+
+
     def extract(self):
         # List of preferred extraction options
         extract_options = [
@@ -106,6 +125,7 @@ class handle(handleBaseClass):
             self._zpaq,
             self._nufile,
             self._dact,
+            self._7z,
         ]
 
         config = self.config
