@@ -13,9 +13,21 @@ class handle(handleBaseClass):
         except:
             return False
         
-    def _uncompress(self):
+    def _lzop(self):
+        config = self.config
+
+        # Are we dealing with LZOP?
+        if "lzop compressed data" not in config['magic_str'].lower():
+            logger.info("Doesn't appear to be LZOP")
+            return False
+
+        # Do we have the tool installed?
+        if not shutil.which("lzop"):
+            logger.warn("lzop isn't installed. try installing it")
+            return False
+
         try:
-            subprocess.check_output(["uncompress",self.config['fileName']])
+            subprocess.check_output(["lzop","-d","-f",self.config['fileName']])
             return True
 
         except:
@@ -26,7 +38,7 @@ class handle(handleBaseClass):
         # List of preferred extraction options
         extract_options = [
             self._libarchive,
-            self._uncompress,
+            self._lzop,
         ]
 
         config = self.config
@@ -51,5 +63,6 @@ import logging
 import os
 import libarchive.public
 import subprocess
+import shutil
 
-logger = logging.getLogger('extract.handlers.application.x_compress')
+logger = logging.getLogger('extract.handlers.application.octet_stream')
