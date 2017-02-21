@@ -33,12 +33,34 @@ class handle(handleBaseClass):
         except:
             return False
 
+    def _zpaq(self):
+        config = self.config
+
+        # Are we dealing with ZPAQ?
+        if "zpaq" not in config['magic_str'].lower():
+            logger.info("Doesn't appear to be ZPAQ")
+            return False
+
+        # Do we have the tool installed?
+        if not shutil.which("zpaq"):
+            logger.warn("zpaq isn't installed. try installing it")
+            return False
+
+        # TODO: Only way of checking for errors here is brittle..
+        out = subprocess.check_output(["zpaq","x",self.config['fileName']])
+
+        if b"0 file(s) extracted" in out or b"Error" in out:
+            logger.warn("Possible error using zpaq: " + out.decode('ascii'))
+            return False
+
+        return True
 
     def extract(self):
         # List of preferred extraction options
         extract_options = [
             self._libarchive,
             self._lzop,
+            self._zpaq,
         ]
 
         config = self.config
