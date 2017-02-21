@@ -60,3 +60,5 @@ logger = logging.getLogger('extract.handlers.application.x_lzma')
 ```
 
 That's it. The handler will now be automatically discovered and called.
+
+For an example of calling multiple options in sequence, check out [x-compress](extract/handlers/application/x_compress/__init__.py)
